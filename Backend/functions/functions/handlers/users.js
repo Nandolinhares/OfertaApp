@@ -6,6 +6,9 @@ const firebaseConfig = require('../utils/config');
 firebase.initializeApp(firebaseConfig);
 //firebase.analytics();
 
+//Validators
+const { validateSignup } = require('../utils/validators');
+
 //Signup
 
 exports.signup = (req, res) => {
@@ -22,6 +25,12 @@ exports.signup = (req, res) => {
         password: req.body.password,
         imageUrl: `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${noImg}?alt=media`,
         createdAt: new Date().toISOString() 
+    }
+
+    const { errors, valid } = validateSignup(newUser);
+
+    if(!valid) {
+        return res.status(400).json(errors);
     }
 
     let token, userId;
